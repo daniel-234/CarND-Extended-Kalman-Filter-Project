@@ -42,6 +42,10 @@ FusionEKF::FusionEKF() {
 
   // Initialize the state transition matrix
   ekf_.F_ = MatrixXd(4, 4);
+
+  noise_ax = 9;
+  noise_ay = 9;
+
   // Initialize the process covariance matrix
   ekf_.Q_ = MatrixXd(4, 4);
 }
@@ -56,6 +60,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    * Initialization
    */
   if (!is_initialized_) {
+    // DELETE
+    cout << "One" << endl;
     /**
      * TODO: Initialize the state ekf_.x_ with the first measurement.
      * TODO: Create the covariance matrix.
@@ -75,6 +81,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       // p_x = ro*cos(theta)
       // p_y = ro*sin(theta)
       // See `main.cpp` line 91: ro is the first element, theta the second one
+
+      // DELETE
+      cout << "Two" << endl;
       ekf_.x_(0) = measurement_pack.raw_measurements_[0] * cos(measurement_pack.raw_measurements_[1]);
       ekf_.x_(1) = measurement_pack.raw_measurements_[0] * sin(measurement_pack.raw_measurements_[1]);
     }
@@ -82,7 +91,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       // TODO: Initialize state.
       ekf_.x_(0) = measurement_pack.raw_measurements_[0];
       ekf_.x_(1) = measurement_pack.raw_measurements_[1];
+
+      // DELETE
+      cout << "Three" << endl;
     }
+
+    // DELETE
+    cout << "Four" << endl;
 
     ekf_.F_ << 1, 0, 1, 0,
                0, 1, 0, 1,
@@ -91,6 +106,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     previous_timestamp_ = measurement_pack.timestamp_;
     // done initializing, no need to predict or update
     is_initialized_ = true;
+
+    // DELETE
+    cout << "Five" << endl;
+
     return;
   }
 
@@ -118,9 +137,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   ekf_.F_(0, 2) = dt;
   ekf_.F_(1, 3) = dt;
 
+
+  // DELETE
+  cout << "efk.F: " << ekf_.F_ << endl;
+
   // set the acceleration noise components
-  noise_ax = 9;
-  noise_ay = 9;
+  //noise_ax = 9;
+  //noise_ay = 9;
 
   // Set the process covariance matrix Q
   // Section 10 of Lesson 24
@@ -129,7 +152,14 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
          dt_3/2*noise_ax, 0, dt_2*noise_ax, 0,
          0, dt_3/2*noise_ay, 0, dt_2*noise_ay;
 
+
+  // DELETE
+  cout << "Six" << endl;
+
   ekf_.Predict();
+
+  // DELETE
+  cout << "Six after Predict" << endl;
 
   /**
    * Update
@@ -143,19 +173,36 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // TODO: Radar updates
+
+    // DELETE
+    cout << "Seven" << endl;
+
     ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
     ekf_.R_ = R_radar_;
 
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+
+    // DELETE
+    cout << "Eight" << endl;
   } else {
     // TODO: Laser updates
     ekf_.H_ = H_laser_;
     ekf_.R_ = R_laser_;
 
+
+    // DELETE
+    cout << "Nine" << endl;
+
     ekf_.Update(measurement_pack.raw_measurements_);
+
+    // DELETE
+    cout << "Ten" << endl;
   }
 
   // print the output
   cout << "x_ = " << ekf_.x_ << endl;
   cout << "P_ = " << ekf_.P_ << endl;
+
+  // DELETE
+  cout << "Eleven" << endl;
 }

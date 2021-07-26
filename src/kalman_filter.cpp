@@ -27,9 +27,17 @@ void KalmanFilter::Predict() {
    * TODO: predict the state
    */
   // Section 9 of Lesson 24
+
+  // DELETE
+  cout << "Six inside Predict" << endl;
+
   x_ = F_ * x_;
   MatrixXd Ft = F_.transpose();
   P_ = F_ * P_ * Ft + Q_;
+
+
+  // DELETE
+  cout << "Six inside Predict after function" << endl;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -67,7 +75,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd u(2);
   u << 0, 0;
 
-  VectorXd z_pred = H_ * x_;
+  VectorXd z_pred = VectorXd(3);
+  z_pred << rho, theta, ro_dot;
   VectorXd y = z - z_pred;
 
   MatrixXd Ht = H_.transpose();
@@ -84,6 +93,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   // KF Prediction step
   x_ = F_ * x_ + u;
-  MatrixXd Ft = F.transpose();
+  MatrixXd Ft = F_.transpose();
   P_ = F_ * P_ * Ft + Q_;
 }
