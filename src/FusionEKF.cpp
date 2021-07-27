@@ -42,6 +42,12 @@ FusionEKF::FusionEKF() {
 
   // Initialize the state transition matrix
   ekf_.F_ = MatrixXd(4, 4);
+  // state covariance matrix P
+  ekf_.P_ = MatrixXd(4, 4);
+  ekf_.P_ << 1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1000, 0,
+            0, 0, 0, 1000;
 
   noise_ax = 9;
   noise_ay = 9;
@@ -139,7 +145,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 
   // DELETE
-  cout << "efk.F: " << ekf_.F_ << endl;
+  cout << "ekf.F: " << ekf_.F_ << endl;
+  cout << "ekf.x: " << ekf_.x_ << endl;
 
   // set the acceleration noise components
   //noise_ax = 9;
@@ -179,6 +186,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
     ekf_.R_ = R_radar_;
+    // DELETE
+    cout << "ekf.H: " << ekf_.H_ << endl;
+    cout << "ekf.R: " << ekf_.R_ << endl;
 
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 
