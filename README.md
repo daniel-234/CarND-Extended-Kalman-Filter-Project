@@ -66,6 +66,12 @@ Here is the main protocol that main.cpp uses for uWebSocketIO in communicating w
    * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
 4. Run it: `./ExtendedKF `
 
+## Screenshot of Kalman Filter results
+
+[image]: ./examples/Kalman-filter-output.png "Kalman Filter output"
+
+![Kalman Filter output][image]
+
 ## Editor Settings
 
 We've purposefully kept editor configuration files out of this repo in order to
