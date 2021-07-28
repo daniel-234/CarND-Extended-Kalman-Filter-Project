@@ -84,14 +84,20 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       // Session 15 of lesson 24
       // p_x = ro*cos(theta)
       // p_y = ro*sin(theta)
-      // See `main.cpp` line 91: ro is the first element, theta the second one
-      ekf_.x_(0) = measurement_pack.raw_measurements_[0] * cos(measurement_pack.raw_measurements_[1]);
-      ekf_.x_(1) = measurement_pack.raw_measurements_[0] * sin(measurement_pack.raw_measurements_[1]);
+      // v_x = ro_dot*cos(theta)
+      // v_y = ro_dot*sin(theta)
+
+      ekf_.x_ << measurement_pack.raw_measurements_[0] * cos(measurement_pack.raw_measurements_[1]),
+                 measurement_pack.raw_measurements_[0] * sin(measurement_pack.raw_measurements_[1]),
+                 measurement_pack.raw_measurements_[2] * cos(measurement_pack.raw_measurements_[1]),
+                 measurement_pack.raw_measurements_[2] * sin(measurement_pack.raw_measurements_[1]);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       // TODO: Initialize state.
-      ekf_.x_(0) = measurement_pack.raw_measurements_[0];
-      ekf_.x_(1) = measurement_pack.raw_measurements_[1];
+      ekf_.x_ << measurement_pack.raw_measurements_[0],
+                 measurement_pack.raw_measurements_[1],
+                 0,
+                 0;
     }
 
     ekf_.F_ << 1, 0, 1, 0,
