@@ -61,23 +61,21 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   float vx = x_(2);
   float vy = x_(3);
 
-  float rho = sqrt(px*px + py*py);
+  float ro = sqrt(px*px + py*py);
   float theta = atan2(py, px);
-
-  float ro_dot = (px*vx + py*vy) / rho;
+  float ro_dot = (px*vx + py*vy) / ro;
 
   VectorXd u(4);
   u << 0, 0, 0, 0;
 
   VectorXd z_pred = VectorXd(3);
-  z_pred << rho, theta, ro_dot;
+  z_pred << ro, theta, ro_dot;
   VectorXd y = z - z_pred;
 
   // Angle normalization
   while (y(1) > M_PI) {
     y(1) -= 2 * M_PI;
   }
-
   while (y(1) < - M_PI) {
     y(1) += 2 * M_PI;
   }
@@ -93,10 +91,4 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
-
-  // EKF Prediction step
-  //x_ = F_ * x_ + u;
-
-  //MatrixXd Ft = F_.transpose();
-  //P_ = F_ * P_ * Ft + Q_;
 }
