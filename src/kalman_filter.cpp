@@ -1,4 +1,5 @@
 #include "kalman_filter.h"
+#include <math.h>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -62,6 +63,9 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   float rho = sqrt(px*px + py*py);
   float theta = atan2(py, px);
+
+  std::cout << "theta=  " << theta << std::endl;
+
   float ro_dot = (px*vx + py*vy) / rho;
 
   VectorXd u(4);
@@ -70,6 +74,17 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd z_pred = VectorXd(3);
   z_pred << rho, theta, ro_dot;
   VectorXd y = z - z_pred;
+
+  std::cout << "y=  " << y << std::endl;
+
+  // Angle normalization
+  while (y(1) > M_PI) {
+    y(1) -= 2 * M_PI;
+  }
+
+  while (y(1) < - M_PI) {
+    y(1) += 2 * M_PI;
+  }
 
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
@@ -84,8 +99,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   P_ = (I - K * H_) * P_;
 
   // EKF Prediction step
-  x_ = F_ * x_ + u;
+  //x_ = F_ * x_ + u;
 
-  MatrixXd Ft = F_.transpose();
-  P_ = F_ * P_ * Ft + Q_;
+  //MatrixXd Ft = F_.transpose();
+  //P_ = F_ * P_ * Ft + Q_;
 }
